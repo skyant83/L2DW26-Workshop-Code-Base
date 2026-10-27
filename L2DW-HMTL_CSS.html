@@ -263,17 +263,6 @@
       margin-bottom: 14px;
     }
 
-    .form-group.checkbox {
-      display: flex;
-      height: 16px;
-      justify-content: start;
-      gap: 8px;
-    }
-
-    .form-group.checkbox input {
-      width: 16px;
-    }
-
     .form-group label {
       display: block;
       font-size: 0.82rem;
@@ -316,9 +305,6 @@
       transition: transform var(--transition), box-shadow var(--transition);
       width: 100%;
       text-align: center;
-    }
-    .btn[disabled]:hover {
-      cursor: not-allowed;
     }
 
     .btn:hover {
@@ -415,116 +401,49 @@
       <div class="card tasks">
         <h2>Tasks</h2>
         <div class="task-item">
-          <label>
-            <input type="checkbox">
-            <span class="task-text done">Set up project repo</span>
-          </label>
+          <input type="checkbox">
+          <span class="task-text done">Set up project repo</span>
           <span class="task-tag tag-low">Done</span>
         </div>
         <div class="task-item">
-          <label>
-            <input type="checkbox">
-            <span class="task-text">Build navigation component</span>
-          </label>
+          <input type="checkbox">
+          <span class="task-text">Build navigation component</span>
           <span class="task-tag tag-normal">In progress</span>
+        </div>
+        <div class="task-item">
+          <input type="checkbox">
+          <span class="task-text">Design color palette</span>
+          <span class="task-tag tag-normal">In progress</span>
+        </div>
+        <div class="task-item">
+          <input type="checkbox">
+          <span class="task-text">Fix mobile layout bugs</span>
+          <span class="task-tag tag-urgent">Urgent</span>
+        </div>
+        <div class="task-item">
+          <input type="checkbox">
+          <span class="task-text">Write API documentation</span>
+          <span class="task-tag tag-low">Low</span>
         </div>
       </div>
       <div class="card form-card">
         <h2>Quick Note</h2>
-        <form>
-          <div class="form-group">
-            <label for="title">Task Title</label>
-            <input type="text"
-              id="title" name="title"
-              placeholder="Task Title">
-          </div>
-          <div class="form-group checkbox">
-            <input type="checkbox"
-              id="is-done"
-              name="is-done" />
-            <label for="is-done">
-              Is Done
-            </label>
-          </div>
-          <button class="btn">Send Note</button>
-        <form>
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" placeholder="Jane Doe">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="jane@example.com">
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="What's on your mind?"></textarea>
+        </div>
+        <button class="btn">Send Note</button>
       </div>
       <footer class="footer">
       </footer>
     </div>
-    <script>
-      let tasks = []
-      const toggle = document.querySelector('.theme-toggle')
-      toggle.addEventListener('click', (evt) => {
-        const currentTheme = document.documentElement.dataset.theme
-        if(currentTheme === 'light') {
-          document.documentElement.dataset.theme = 'dark'
-        } else {
-          document.documentElement.dataset.theme = 'light'
-        }
-      })
-
-      function buildTaskHTML(tasks) {
-        let HTMLList = []
-
-        for(let task of tasks) {
-          let htmlString = `
-            <div class="task-item">
-              <label>
-                <input type="checkbox" value="${task.completed}">
-                <span class="task-text ${ task.completed ? 'done' : ''}">
-                  ${task.title}
-                </span>
-              </label>
-              <span class="task-tag ${ task.completed ? 'tag-low' : 'tag-normal'}">
-                ${ task.completed ? 'Done' : 'In Progress' }
-              </span>
-            </div>
-          `
-          HTMLList.push(htmlString)
-        }
-        return HTMLList
-      }
-
-      function populateTasks() {
-        const url = 'https://jsonplaceholder.typicode.com/todos'
-        fetch(url).then(response => {
-          return response.json()
-        }).then(data => {
-          tasks.push(...data.slice(0, 10))
-          const taskListHTML = buildTaskHTML(tasks)
-          let taskContainer = document.querySelector('.tasks')
-          for(let html of taskListHTML) {
-            taskContainer.innerHTML += html
-          }
-        })
-      }
-
-      populateTasks()
-      const form = document.querySelector('form')
-      form.addEventListener('submit', evt => {
-        evt.preventDefault()
-        form.querySelector('button').setAttribute('disabled', true)
-
-        const formData = new FormData(form)
-        fetch('https://httpbin.org/post', {
-          method: 'POST',
-          body: JSON.stringify({
-            title: formData.get('title'),
-            completed: formData.get('is-done') === 'on'
-          }),
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-          }
-        })
-        .then(response => response.json())
-        .then(json => {
-          tasks.push(JSON.parse(json.data))
-          let html = buildTaskHTML([JSON.parse(json.data)])
-          document.querySelector('.tasks').innerHTML += html[0]
-          form.querySelector('button').removeAttribute('disabled')
-        })
-      })
-    </script>
   </body>
 </html>
